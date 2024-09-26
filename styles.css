@@ -1,0 +1,134 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 80%;
+  max-width: 1200px;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+#datetime {
+  font-size: 1.2em;
+  color: #333;
+  margin-top: 10px;
+}
+
+h1 {
+  color: #000000;
+  font-size: 2.5em;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+form h2 {
+  margin-bottom: 15px;
+  font-size: 1.8em;
+  color: #333;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form-row input {
+  flex: 1;
+  min-width: 150px; /* Membatasi lebar minimum input */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+form button {
+  padding: 10px 20px;
+  background-color: #08007a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+form button:hover {
+  background-color: #08007a;
+}
+
+.guestbook-table {
+  margin-top: 20px;
+}
+
+.guestbook-table h2 {
+  margin-bottom: 15px;
+  font-size: 1.8em;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table,
+th,
+td {
+  border: 1px solid #ddd;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: center;
+}
+
+th {
+  background-color: #08007a;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+.hidden-camera {
+  display: none;
+}
+
+section h2 {
+  font-family: Georgia, "Times New Roman", Times, serif;
+}

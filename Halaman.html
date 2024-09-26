@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buku Tamu dengan Webcam Tersembunyi</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    <style>
+      /* Memperkecil ukuran input field */
+      form input,
+      form select {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        font-size: 14px;
+      }
+
+      /* Sembunyikan webcam */
+      #my_camera {
+        display: none;
+      }
+
+      /* Tombol submit styling */
+      form button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      form button:hover {
+        background-color: #45a049;
+      }
+
+      /* Styling khusus untuk cetak */
+      @media print {
+        /* Hanya tampilkan tabel dan tombol print disembunyikan */
+        body * {
+          visibility: hidden;
+        }
+
+        .guestbook-table,
+        .guestbook-table * {
+          visibility: visible;
+        }
+
+        .guestbook-table {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+        }
+
+        button {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img src="logoBBPMP.jpg" alt="Logo" class="logo" />
+        <h1>Buku Tamu</h1>
+        <div id="datetime"></div>
+        <!-- Waktu dan Tanggal akan muncul di sini -->
+      </header>
+
+      <form id="guestbookForm">
+        <h2>Isi Buku Tamu</h2>
+        <div class="form-row">
+          <input type="text" id="nama" placeholder="Nama" required />
+          <input type="text" id="instansi" placeholder="Instansi" required />
+          <input type="text" id="alamat" placeholder="Alamat" required />
+          <select id="jenis_kelamin" required>
+            <option value="" disabled selected>Pilih Jenis Kelamin</option>
+            <option value="Pria">Pria</option>
+            <option value="Wanita">Wanita</option>
+          </select>
+          <input type="tel" id="no_telp" placeholder="No Telp" required />
+          <input type="text" id="keterangan" placeholder="Keterangan" required />
+        </div>
+
+        <!-- Webcam yang disembunyikan -->
+        <div id="my_camera"></div>
+
+        <!-- Hidden input untuk menyimpan gambar -->
+        <input type="hidden" name="image" id="image" />
+
+        <button type="submit">Kirim</button>
+      </form>
+
+      <section class="guestbook-table">
+        <h2>Daftar Tamu</h2>
+        <table id="guestbookTable">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Waktu</th>
+              <th>Nama</th>
+              <th>Instansi</th>
+              <th>Alamat</th>
+              <th>Jenis Kelamin</th>
+              <th>No Telp</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="guestbookBody">
+            <!-- Data akan ditambahkan secara otomatis di sini -->
+          </tbody>
+        </table>
+        <button onclick="printGuestbook()">Print</button>
+        <!-- Tombol Print -->
+      </section>
+
+      <script src="webcam.js"></script>
+      <script>
+        // Fungsi untuk memperbarui waktu
+        function updateDateTime() {
+          const now = new Date();
+          const date = now.toLocaleDateString("id-ID", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+          const time = now.toLocaleTimeString("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          });
+          document.getElementById("datetime").innerHTML = date + " - " + time;
+        }
+
+        // Perbarui waktu setiap detik
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Memperbarui waktu saat halaman dimuat pertama kali
+
+        // Fungsi untuk mencetak hanya tabel daftar tamu
+        function printGuestbook() {
+          window.print();
+        }
+
+        // Fungsi untuk mendapatkan waktu saat ini untuk database
+        function getCurrentDateTime() {
+          const now = new Date();
+          const date = now.toISOString().slice(0, 10); // Mendapatkan tanggal (YYYY-MM-DD)
+          const time = now.toTimeString().slice(0, 8); // Mendapatkan waktu (HH:MM:SS)
+          return date + " " + time;
+        }
+
+        // Fungsi untuk mengirim data ke server (tambah ke database)
+        document.getElementById("guestbookForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const currentDateTime = getCurrentDateTime();
+
+          // Tambahkan data ke tabel di tampilan
+          const tableBody = document.getElementById("guestbookBody");
+          const newRow = document.createElement("tr");
+
+          // Hitung nomor tamu (reset setiap hari)
+          const todayRows = Array.from(tableBody.querySelectorAll("tr")).filter((row) => {
+            const rowDate = row.cells[1].textContent.split(" ")[0]; // Ambil tanggal dari kolom Waktu
+            return rowDate === currentDateTime.split(" ")[0];
+          });
+          const guestNo = todayRows.length + 1;
+
+          newRow.innerHTML = `
+                    <td>${guestNo}</td>
+                    <td>${currentDateTime}</td>
+                    <td>${document.getElementById("nama").value}</td>
+                    <td>${document.getElementById("instansi").value}</td>
+                    <td>${document.getElementById("alamat").value}</td>
+                    <td>${document.getElementById("jenis_kelamin").value}</td>
+                    <td>${document.getElementById("no_telp").value}</td>
+                    <td>${document.getElementById("keterangan").value}</td>
+                `;
+
+          tableBody.appendChild(newRow);
+
+          // Reset form setelah submit
+          document.getElementById("guestbookForm").reset();
+        });
+      </script>
+    </div>
+  </body>
+</html>
